@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+  Zann Cafe 
+{% endblock title %}
+
+{% block body %}
+  <div id="drink" class="tm-page-content">
+    {% if user.is_authenticated %}
+    <nav class="tm-black-bg tm-drinks-nav">
+      <ul>
+        <li>
+          <form method="GET" action="/drink/" class="d-flex" role="search">
+            <input name="search" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </li>
+      </ul>
+    </nav>
+    {% endif %}
+      <div id="hot" class="tm-tab-content">
+        <div class="tm-list">
+          {% for p in posts %}
+              <div class="tm-list-item">  
+                {% if p.image %}        
+                  <img src="{{p.image.url}}" alt="{{p.image}}" class="tm-list-item-img">
+                {% endif %}
+                  <div class="tm-black-bg tm-list-item-text">
+                      <h3 class="tm-list-item-name">{{p.title}}<span class="tm-list-item-price">{{p.content|linebreaks}}</span></h3>
+                      <p class="tm-list-item-description">{{p.created_at}}</p>
+                      <a href="/detail/{{p.id}}/" class="tm-btn-primary">Detail</a>              
+                  </div>
+              </div>
+          {% endfor %}  
+          <br><br>
+          {% if posts.has_other_pages %}
+            <div style="display: flex; justify-content: center;">
+                <nav aria-label="Topics pagination" class="mb-4">
+                    <ul class="pagination">
+                        {% if posts.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ posts.previous_page_number }}">Previous</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Previous</span>
+                            </li>
+                        {% endif %}
+                        {% for page_num in posts.paginator.page_range %}
+                        {% if posts.number == page_num %}
+                            <li class="page-item active">
+                                <span class="page-link">
+                        {{ page_num }}
+                                </span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                            </li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if posts.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ posts.next_page_number }}">Next</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Next</span>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        {% endif%}
+        </div>   
+      </div>           
+  </div>
+{% endblock body %}
